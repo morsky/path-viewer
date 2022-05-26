@@ -1,0 +1,26 @@
+{
+  "name": "path-viewer",
+  "version": "1.0.0",
+  "default": "index.hmlt",
+  "scripts": {
+    "start": "parcel index.html",
+    "build": "parcel build index.html --dist-dir ./dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/morsky/path-viewer.git"
+  },
+  "author": "Vlad",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/morsky/path-viewer/issues"
+  },
+  "homepage": "https://github.com/morsky/path-viewer#readme",
+  "dependencies": {
+    "leaflet": "^1.8.0"
+  },
+  "description": "",
+  "devDependencies": {
+    "parcel": "^2.5.0"
+  }
+}
