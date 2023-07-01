@@ -18,7 +18,6 @@ class App {
     this._loadMap();
     this.#errorPopUp.style.display = 'none';
     this.#pathOptions.style.visibility = 'hidden';
-    // this.#fillPath.style.display = 'none';
 
     // Attach event handlers
     this.#inputFile.addEventListener(
@@ -26,6 +25,9 @@ class App {
       async ev => {
         try {
           this._clearError();
+          this.#coordinates = [];
+          this.#pathOptions.style.visibility = 'visible';
+          this.#fillPath.checked = false;
 
           // Handle multiple fileuploads
           let files = ev.currentTarget.files;
@@ -39,8 +41,6 @@ class App {
           const data = await Promise.all(readers);
 
           this._processData(data);
-
-          this.#pathOptions.style.visibility = 'visible';
         } catch (err) {
           this.#errorPopUp.style.display = 'flex';
           this.#errorMessage.innerHTML = err.message;
@@ -110,7 +110,7 @@ class App {
 
   _processData(data) {
     data.forEach(el => {
-      this.#coordinates = el
+      const coords = el
         .split('\n')
         .filter(el => el.includes('<gx:coord>'))
         .map(el => {
@@ -120,14 +120,11 @@ class App {
           const lng = coords[0];
           const arr = [Number(lat), Number(lng)];
 
-          return arr;
+          this.#coordinates.push(arr);
         });
 
       if (this.#coordinates.length === 0)
         throw new Error(`No coordinates found!`);
-
-      // Check if map Object is loaded
-      // if (!this.#map) this.#map = L.map('map');
 
       this._renderPath(this.#coordinates);
     });
