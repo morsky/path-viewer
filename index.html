@@ -30,6 +30,7 @@
   </head>
   <body>
     <div id="map"></div>
+
     <div id="controls">
       <div id="upload">
         <label for="fileinput"
@@ -37,11 +38,15 @@
         >
         <input type="file" id="fileinput" multiple />
 
-        <label for="fill-path">Fill path between start and and point</label>
+        <label for="fill-path">Fill path between start and end point</label>
         <input type="checkbox" id="fill-path" />
       </div>
 
       <button id="reset-page">Clear</button>
+    </div>
+
+    <div id="error">
+      <p id="error-text"></p>
     </div>
   </body>
 </html>

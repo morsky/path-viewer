@@ -1,23 +1,28 @@
 'use strict';
 
 /////////////////////////////////////
-// APPLOCATION ARCHITECTURE
+// APPLICATION ARCHITECTURE
 class App {
   #map;
   #awoledFileFormats = ['kml'];
   #fillPath = document.getElementById('fill-path');
   #inputFile = document.getElementById('fileinput');
   #resetPage = document.getElementById('reset-page');
+  #errorPopUp = document.getElementById('error');
+  #errorMessage = document.getElementById('error-text');
 
   constructor() {
     // Load map
     this._loadMap();
+    this.#errorPopUp.style.display = 'none';
 
     // Attach event handlers
     this.#inputFile.addEventListener(
       'change',
       async ev => {
         try {
+          this._clearError();
+
           // Handle multiple fileuploads
           let files = ev.currentTarget.files;
           let readers = [];
@@ -31,7 +36,8 @@ class App {
 
           this._processData(data);
         } catch (err) {
-          console.error(err);
+          this.#errorPopUp.style.display = 'flex';
+          this.#errorMessage.innerHTML = err.message;
         }
       },
       false
@@ -48,6 +54,7 @@ class App {
         this.#inputFile.value = '';
         if (this.#fillPath.checked) this.#fillPath.checked = false;
         this._loadMap();
+        this._clearError();
       },
       false
     );
@@ -127,6 +134,11 @@ class App {
 
     // zoom the map to the polyline
     this.#map.fitBounds(polyline.getBounds());
+  }
+
+  _clearError() {
+    this.#errorPopUp.style.display = 'none';
+    this.#errorMessage.innerHTML = '';
   }
 }
 
