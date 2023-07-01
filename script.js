@@ -10,11 +10,15 @@ class App {
   #resetPage = document.getElementById('reset-page');
   #errorPopUp = document.getElementById('error');
   #errorMessage = document.getElementById('error-text');
+  #pathOptions = document.getElementById('path-options');
+  #coordinates = [];
 
   constructor() {
     // Load map
     this._loadMap();
     this.#errorPopUp.style.display = 'none';
+    this.#pathOptions.style.visibility = 'hidden';
+    // this.#fillPath.style.display = 'none';
 
     // Attach event handlers
     this.#inputFile.addEventListener(
@@ -35,6 +39,8 @@ class App {
           const data = await Promise.all(readers);
 
           this._processData(data);
+
+          this.#pathOptions.style.visibility = 'visible';
         } catch (err) {
           this.#errorPopUp.style.display = 'flex';
           this.#errorMessage.innerHTML = err.message;
@@ -44,6 +50,7 @@ class App {
     );
 
     this._resetPage();
+    this._fillPath();
   }
 
   _resetPage() {
@@ -55,6 +62,7 @@ class App {
         if (this.#fillPath.checked) this.#fillPath.checked = false;
         this._loadMap();
         this._clearError();
+        this.#pathOptions.style.visibility = 'hidden';
       },
       false
     );
@@ -102,7 +110,7 @@ class App {
 
   _processData(data) {
     data.forEach(el => {
-      const coords = el
+      this.#coordinates = el
         .split('\n')
         .filter(el => el.includes('<gx:coord>'))
         .map(el => {
@@ -115,21 +123,27 @@ class App {
           return arr;
         });
 
-      if (coords.length === 0) throw new Error(`No coordinates found!`);
+      if (this.#coordinates.length === 0)
+        throw new Error(`No coordinates found!`);
 
       // Check if map Object is loaded
       // if (!this.#map) this.#map = L.map('map');
 
-      this._renderPath(coords);
+      this._renderPath(this.#coordinates);
     });
   }
 
-  _renderPath(pathArray) {
+  _renderPath(pathArray, filled) {
+    if (!filled) {
+      this.#map.remove();
+      this._loadMap();
+    }
+
     // create a red polyline from an array of LatLng points
     const polyline = L.polyline(pathArray, {
       color: 'red',
       smoothFactor: 6,
-      fill: this.#fillPath.checked,
+      fill: filled,
     }).addTo(this.#map);
 
     // zoom the map to the polyline
@@ -139,6 +153,16 @@ class App {
   _clearError() {
     this.#errorPopUp.style.display = 'none';
     this.#errorMessage.innerHTML = '';
+  }
+
+  _fillPath() {
+    this.#fillPath.addEventListener(
+      'click',
+      () => {
+        this._renderPath(this.#coordinates, this.#fillPath.checked);
+      },
+      false
+    );
   }
 }
 
