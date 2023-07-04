@@ -16,9 +16,6 @@
     "url": "https://github.com/morsky/path-viewer/issues"
   },
   "homepage": "https://github.com/morsky/path-viewer#readme",
-  "dependencies": {
-    "leaflet": "^1.8.0"
-  },
   "description": "",
   "devDependencies": {
     "parcel": "^2.5.0"
